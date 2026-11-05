@@ -1,7 +1,8 @@
 import "server-only";
 import { cookies } from "next/headers";
 import { randomBytes, timingSafeEqual, createHash } from "node:crypto";
-import { getDatabase } from "./menu-store";
+import { getDatabase, menuStorageAvailable } from "./menu-store";
+import { getSupabase, requireSupabaseSuccess, supabaseConfigured } from "./supabase-server";
 
 const cookieName = "choco_admin";
 const lifetime = 60 * 60 * 12;
@@ -24,12 +25,22 @@ function sessionDigest(token: string) {
   return digest(`${token}\0${process.env.ADMIN_LOGIN}\0${process.env.ADMIN_PASSWORD}`);
 }
 
-export function loginAllowed() {
+export async function loginAllowed() {
+  if (supabaseConfigured()) {
+    const result = await getSupabase().from("choco_login_attempts").select("count, reset_at").eq("id", 1).maybeSingle();
+    requireSupabaseSuccess(result.error);
+    return !result.data || Number(result.data.reset_at) < Date.now() || result.data.count < 10;
+  }
   const row = getDatabase().prepare("SELECT count, reset_at FROM login_attempts WHERE id = 1").get() as { count: number; reset_at: number } | undefined;
   return !row || row.reset_at < Date.now() || row.count < 10;
 }
 
-export function recordFailure() {
+export async function recordFailure() {
+  if (supabaseConfigured()) {
+    const result = await getSupabase().rpc("choco_record_login_failure");
+    requireSupabaseSuccess(result.error);
+    return;
+  }
   getDatabase().prepare(`INSERT INTO login_attempts VALUES (1, 1, ?) ON CONFLICT(id) DO UPDATE SET
     count = CASE WHEN reset_at < ? THEN 1 ELSE count + 1 END,
     reset_at = CASE WHEN reset_at < ? THEN excluded.reset_at ELSE reset_at END`)
@@ -37,20 +48,35 @@ export function recordFailure() {
 }
 
 export async function authenticated() {
-  if (!credentialsConfigured()) return false;
+  if (!credentialsConfigured() || !menuStorageAvailable()) return false;
   const token = (await cookies()).get(cookieName)?.value;
   if (!token) return false;
+  if (supabaseConfigured()) {
+    const result = await getSupabase().from("choco_admin_sessions").select("token").eq("token", sessionDigest(token)).gt("expires", Date.now()).maybeSingle();
+    requireSupabaseSuccess(result.error);
+    return Boolean(result.data);
+  }
   return Boolean(getDatabase().prepare("SELECT token FROM sessions WHERE token = ? AND expires > ?").get(sessionDigest(token), Date.now()));
 }
 
 export async function startSession(request: Request) {
   const token = randomBytes(32).toString("hex");
-  const db = getDatabase();
-  db.prepare("DELETE FROM sessions WHERE expires <= ?").run(Date.now());
-  db.prepare("INSERT INTO sessions VALUES (?, ?)").run(sessionDigest(token), Date.now() + lifetime * 1000);
-  db.exec("DELETE FROM login_attempts");
+  if (supabaseConfigured()) {
+    const client = getSupabase();
+    const expired = await client.from("choco_admin_sessions").delete().lte("expires", Date.now());
+    requireSupabaseSuccess(expired.error);
+    const session = await client.from("choco_admin_sessions").insert({ token: sessionDigest(token), expires: Date.now() + lifetime * 1000 });
+    requireSupabaseSuccess(session.error);
+    const attempts = await client.from("choco_login_attempts").delete().eq("id", 1);
+    requireSupabaseSuccess(attempts.error);
+  } else {
+    const db = getDatabase();
+    db.prepare("DELETE FROM sessions WHERE expires <= ?").run(Date.now());
+    db.prepare("INSERT INTO sessions VALUES (?, ?)").run(sessionDigest(token), Date.now() + lifetime * 1000);
+    db.exec("DELETE FROM login_attempts");
+  }
   (await cookies()).set(cookieName, token, {
-    httpOnly: true, sameSite: "strict", secure: new URL(request.url).protocol === "https:",
+    httpOnly: true, sameSite: "strict", secure: new URL(request.url).protocol === "https:" || request.headers.get("x-forwarded-proto") === "https",
     path: "/", maxAge: lifetime,
   });
 }
@@ -58,7 +84,10 @@ export async function startSession(request: Request) {
 export async function endSession() {
   const jar = await cookies();
   const token = jar.get(cookieName)?.value;
-  if (token) getDatabase().prepare("DELETE FROM sessions WHERE token = ?").run(sessionDigest(token));
+  if (token && supabaseConfigured()) {
+    const result = await getSupabase().from("choco_admin_sessions").delete().eq("token", sessionDigest(token));
+    requireSupabaseSuccess(result.error);
+  } else if (token) getDatabase().prepare("DELETE FROM sessions WHERE token = ?").run(sessionDigest(token));
   jar.delete(cookieName);
 }
 

@@ -3,8 +3,8 @@ import Photo from "@/components/ui/Photo";
 import { ArrowIcon } from "@/components/ui/icons";
 import { publicMenu } from "@/lib/menu-store";
 
-export default function HeroDishGallery() {
-  const categories = publicMenu();
+export default async function HeroDishGallery() {
+  const categories = await publicMenu();
   const preferred = ["desserts", "breakfast", "main"];
   const featured = preferred.flatMap(id => categories.filter(category => category.id === id));
   const dishes = [...featured, ...categories.filter(category => !preferred.includes(category.id))].slice(0, 3);

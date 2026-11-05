@@ -14,11 +14,11 @@ export const metadata: Metadata = {
     url: "/menu",
   },
 };
-export default function MenuPage() {
+export default async function MenuPage() {
   return (
     <div className="menu-catalog">
       <MenuHero />
-      <MenuExplorer categories={publicMenu()} />
+      <MenuExplorer categories={await publicMenu()} />
       <div className="container menu-bottom-note">
         <Disclaimer />
       </div>

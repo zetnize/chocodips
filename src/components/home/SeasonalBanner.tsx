@@ -4,8 +4,8 @@ import CircleArrowButton from "@/components/ui/CircleArrowButton";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Photo from "@/components/ui/Photo";
 import ParallaxLayer from "./ParallaxLayer";
-export default function SeasonalBanner() {
-  const category = publicMenu().find(category => category.groups.some(group => group.items.some(item => item.seasonal)));
+export default async function SeasonalBanner() {
+  const category = (await publicMenu()).find(category => category.groups.some(group => group.items.some(item => item.seasonal)));
   const item = category?.groups.flatMap(group => group.items).find(item => item.seasonal);
   if (!item || !category) return null;
   return (

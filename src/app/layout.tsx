@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   icons: { icon: "/icon.svg" },
 };
 export const viewport: Viewport = { themeColor: "#1C0F0A" };
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -62,7 +62,7 @@ export default function RootLayout({
           <a className="skip-link" href="#main-content">
             Перейти к содержимому
           </a>
-          <Header menuNavigation={publicMenu().map(category => ({ href: `/menu#${category.id}`, label: category.title }))} />
+          <Header menuNavigation={(await publicMenu()).map(category => ({ href: `/menu#${category.id}`, label: category.title }))} />
           <main id="main-content" tabIndex={-1}>
             {children}
           </main>

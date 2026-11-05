@@ -6,6 +6,7 @@ import JsonLd from "@/components/ui/JsonLd";
 import { siteUrl } from "@/lib/config";
 import { publicMenu } from "@/lib/menu-store";
 import "./globals.css";
+import IntroNavigationProvider from "@/components/home/IntroNavigationProvider";
 const display = Cormorant_Garamond({
   weight: ["300", "400", "500"],
   subsets: ["cyrillic", "latin"],
@@ -58,6 +59,7 @@ export default async function RootLayout({
   return (
     <html lang="ru" className={`${display.variable} ${sans.variable}`}>
       <body>
+        <IntroNavigationProvider>
         <div id="site-content">
           <a className="skip-link" href="#main-content">
             Перейти к содержимому
@@ -69,6 +71,7 @@ export default async function RootLayout({
           <Footer />
         </div>
         <JsonLd />
+        </IntroNavigationProvider>
       </body>
     </html>
   );

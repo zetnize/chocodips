@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import WaveLoader from "@/components/ui/WaveLoader";
 import { useLockBodyScroll } from "@/hooks/useLockBodyScroll";
+import { useSkipIntro } from "./IntroNavigationProvider";
 
 function IntroScrollLock() {
   useLockBodyScroll();
@@ -57,6 +58,7 @@ export default function IntroHero({
   gallery: ReactNode;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const skipIntro = useSkipIntro();
   const [finished, setFinished] = useState(false);
   const [blocked, setBlocked] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -66,29 +68,21 @@ export default function IntroHero({
   );
 
   useEffect(() => {
-    const key = "choco-dips:visited:v1";
-    let returning = false;
-    try {
-      returning = localStorage.getItem(key) === "1";
-    } catch {
-      /* Storage may be unavailable in private browser settings. */
-    }
     const frame = requestAnimationFrame(() => {
-      if (returning) {
+      if (skipIntro) {
         setFinished(true);
         setTransitionComplete(true);
         setVisit("returning");
       } else {
-        try {
-          localStorage.setItem(key, "1");
-        } catch {
-          /* The first-visit experience still works without storage. */
-        }
+        setFinished(false);
+        setTransitionComplete(false);
+        setBlocked(false);
+        setFailed(false);
         setVisit("new");
       }
     });
     return () => cancelAnimationFrame(frame);
-  }, []);
+  }, [skipIntro]);
 
   useEffect(() => {
     if (!finished || visit === "returning") return;

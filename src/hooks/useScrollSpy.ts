@@ -4,27 +4,33 @@ export function useScrollSpy(ids: string[]) {
   const [current, setCurrent] = useState("");
   const initialized = useRef(false);
   useEffect(() => {
-    const nodes = ids
+    const getNodes = () => ids
       .map((id) => document.getElementById(id))
       .filter((node): node is HTMLElement => Boolean(node));
+    const nodes = getNodes();
     if (!nodes.length) return;
     let disposed = false;
     const initialHash = window.location.hash.slice(1);
     const headerOffset = () => {
       const bar = document.querySelector(".category-bar");
-      return bar ? bar.getBoundingClientRect().bottom + 48 : 180;
+      const header = document.querySelector(".site-header");
+      const section = getNodes()[0];
+      const sectionOffset = section ? parseFloat(getComputedStyle(section).scrollMarginTop) || 0 : 0;
+      return bar ? bar.getBoundingClientRect().bottom + 48 : Math.max((header?.getBoundingClientRect().bottom ?? 88) + 16, sectionOffset) + 2;
     };
     const update = () => {
       if (!initialized.current) return;
+      const currentNodes = getNodes();
+      if (!currentNodes.length) return;
       const offset = headerOffset();
-      const passed = nodes.filter(
+      const passed = currentNodes.filter(
         (node) => node.getBoundingClientRect().top <= offset,
       );
       const next =
         window.scrollY + window.innerHeight >=
         document.documentElement.scrollHeight - 8
-          ? nodes.at(-1)!
-          : passed.at(-1) || nodes[0];
+          ? currentNodes.at(-1)!
+          : passed.at(-1) || currentNodes[0];
       setCurrent(next.id);
       if (window.scrollY > 150 && window.location.hash !== `#${next.id}`)
         history.replaceState(null, "", `#${next.id}`);

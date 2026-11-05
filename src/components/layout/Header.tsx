@@ -1,39 +1,49 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Logo from "./Logo";
 import MobileNav from "./MobileNav";
 import { site } from "@/data/site";
 import { useScrolled } from "@/hooks/useScrolled";
+import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { BurgerIcon } from "@/components/ui/icons";
 export default function Header({ menuNavigation }: { menuNavigation: { href: string; label: string }[] }) {
   const path = usePathname();
   const scrolled = useScrolled();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [pastHero, setPastHero] = useState(false);
-  const visible = path !== "/" || pastHero;
+  const [hiddenOnScroll, setHiddenOnScroll] = useState(false);
+  const homePage = path === "/";
   const menuPage = path === "/menu";
+  const categoryIds = useMemo(() => menuPage ? menuNavigation.map(link => link.href.split("#")[1]) : [], [menuPage, menuNavigation]);
+  const activeCategory = useScrollSpy(categoryIds);
+  const hidden = homePage && scrolled && hiddenOnScroll;
   useEffect(() => {
-    if (path !== "/") return;
-    const hero = document.querySelector(".intro-hero");
-    if (!hero) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setPastHero(entry.boundingClientRect.bottom <= 0);
-      },
-      { threshold: 0 },
-    );
-    observer.observe(hero);
-    return () => observer.disconnect();
-  }, [path]);
+    if (!homePage) return;
+    let previousY = window.scrollY;
+    const onScroll = () => {
+      const y = Math.max(0, window.scrollY);
+      if (Math.abs(y - previousY) < 8 && y > 40) return;
+      setHiddenOnScroll(y > 80 && y > previousY);
+      previousY = y;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [homePage]);
   const close = useCallback(() => setMobileOpen(false), []);
+  function navigateCategory(event: MouseEvent<HTMLAnchorElement>) {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    event.preventDefault();
+    window.dispatchEvent(new CustomEvent("menu-category-navigation", {
+      detail: event.currentTarget.hash.slice(1),
+    }));
+  }
   return (
     <>
       <header
-        className={`site-header ${scrolled || path !== "/" ? "is-scrolled" : ""} ${visible ? "" : "is-hidden"}`}
-        inert={!visible}
-        aria-hidden={!visible}
+        className={`site-header ${homePage ? "home-header" : ""} ${menuPage ? "menu-page-header" : ""} ${scrolled || !homePage ? "is-scrolled" : ""} ${hidden ? "is-hidden" : ""}`}
+        inert={hidden}
+        aria-hidden={hidden}
       >
         <div
           className={`container header-inner ${menuPage ? "menu-header-inner" : ""}`}
@@ -47,20 +57,15 @@ export default function Header({ menuNavigation }: { menuNavigation: { href: str
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() =>
-                    window.dispatchEvent(
-                      new CustomEvent("menu-category-navigation", {
-                        detail: link.href.split("#")[1],
-                      }),
-                    )
-                  }
+                  aria-current={activeCategory === link.href.split("#")[1] ? "location" : undefined}
+                  onClick={navigateCategory}
                 >
                   {link.label}
                 </Link>
               ))}
             </nav>
           )}
-          <Logo />
+          {!homePage && <Logo />}
           {menuPage && (
             <nav
               className="menu-header-nav"
@@ -70,13 +75,8 @@ export default function Header({ menuNavigation }: { menuNavigation: { href: str
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() =>
-                    window.dispatchEvent(
-                      new CustomEvent("menu-category-navigation", {
-                        detail: link.href.split("#")[1],
-                      }),
-                    )
-                  }
+                  aria-current={activeCategory === link.href.split("#")[1] ? "location" : undefined}
+                  onClick={navigateCategory}
                 >
                   {link.label}
                 </Link>

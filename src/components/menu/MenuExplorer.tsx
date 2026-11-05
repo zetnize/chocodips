@@ -2,9 +2,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { normalizeSearch } from "@/lib/format";
-import { useScrollSpy } from "@/hooks/useScrollSpy";
 import type { MenuCategory, MenuItem } from "@/lib/types";
-import CategoryBar from "./CategoryBar";
 import MenuSearch from "./MenuSearch";
 import MenuSection from "./MenuSection";
 const MenuItemModal = dynamic(() => import("./MenuItemModal"), { ssr: false });
@@ -74,11 +72,6 @@ export default function MenuExplorer({
           }))
           .filter((category) => category.groups.length);
   }, [categories, debounced]);
-  const ids = useMemo(
-    () => filtered.map((category) => category.id),
-    [filtered],
-  );
-  const active = useScrollSpy(ids);
   const count = filtered.reduce(
     (total, category) =>
       total +
@@ -87,9 +80,6 @@ export default function MenuExplorer({
   );
   return (
     <>
-      {filtered.length > 0 && (
-        <CategoryBar categories={filtered} active={active} />
-      )}
       <div className="container menu-body">
         <div className="menu-tools">
           <MenuSearch value={query} onChange={setQuery} />

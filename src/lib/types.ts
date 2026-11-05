@@ -1,7 +1,7 @@
-export type CategoryId =
-  "breakfast" | "coffee" | "desserts" | "main" | "drinks" | "seasonal";
+export type CategoryId = string;
 export type MenuTag = "hit" | "new" | "veg" | "spicy";
 export interface MenuItem {
+  hidden?: boolean;
   id: string;
   name: string;
   description?: string;
@@ -25,6 +25,8 @@ export interface MenuGroup {
   items: MenuItem[];
 }
 export interface MenuCategory {
+  hidden?: boolean;
+  layout?: "cards" | "rows";
   id: CategoryId;
   title: string;
   availability?: string;

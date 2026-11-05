@@ -1,11 +1,13 @@
-import { getSeasonalItem } from "@/data/menu";
+import { publicMenu } from "@/lib/menu-store";
 import { formatPrice } from "@/lib/format";
 import CircleArrowButton from "@/components/ui/CircleArrowButton";
 import Eyebrow from "@/components/ui/Eyebrow";
 import Photo from "@/components/ui/Photo";
 import ParallaxLayer from "./ParallaxLayer";
 export default function SeasonalBanner() {
-  const item = getSeasonalItem();
+  const category = publicMenu().find(category => category.groups.some(group => group.items.some(item => item.seasonal)));
+  const item = category?.groups.flatMap(group => group.items).find(item => item.seasonal);
+  if (!item || !category) return null;
   return (
     <section
       className="seasonal-section container"
@@ -16,7 +18,7 @@ export default function SeasonalBanner() {
           <ParallaxLayer>
             <Photo
               src={item.image!}
-              alt="Пряный напиток Apple + в гранёном стакане с воздушной пеной и лепестками роз"
+              alt={item.name}
               sizes="(max-width: 767px) 100vw, 65vw"
             />
           </ParallaxLayer>
@@ -29,7 +31,7 @@ export default function SeasonalBanner() {
             <span>{formatPrice(item.price)}</span>
             <CircleArrowButton
               label="Смотреть сезонное меню"
-              href="/menu#seasonal"
+              href={`/menu#${category.id}`}
             />
           </div>
         </div>

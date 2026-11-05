@@ -1,38 +1,23 @@
 import Link from "next/link";
 import Photo from "@/components/ui/Photo";
 import { ArrowIcon } from "@/components/ui/icons";
-
-const dishes = [
-  {
-    href: "/menu#desserts",
-    image: "/images/hero-1.jpg",
-    title: "Десерты",
-    alt: "Шоколадные крепы с орехами и мраморной глазурью",
-  },
-  {
-    href: "/menu#breakfast",
-    image: "/images/cat-breakfast.jpg",
-    title: "Завтраки",
-    alt: "Тост с креветками, авокадо и жареным яйцом",
-  },
-  {
-    href: "/menu#main",
-    image: "/images/cat-main.jpg",
-    title: "Основное",
-    alt: "Брускетта с овощами, зеленью и пармезаном",
-  },
-];
+import { publicMenu } from "@/lib/menu-store";
 
 export default function HeroDishGallery() {
+  const categories = publicMenu();
+  const preferred = ["desserts", "breakfast", "main"];
+  const featured = preferred.flatMap(id => categories.filter(category => category.id === id));
+  const dishes = [...featured, ...categories.filter(category => !preferred.includes(category.id))].slice(0, 3);
+  if (!dishes.length) return null;
   return (
     <div className="intro-dish-gallery">
       <p className="eyebrow">Загляните в меню</p>
       <div className="intro-dish-grid">
         {dishes.map((dish) => (
-          <Link key={dish.href} href={dish.href} className="intro-dish">
+          <Link key={dish.id} href={`/menu#${dish.id}`} className="intro-dish">
             <Photo
               src={dish.image}
-              alt={dish.alt}
+              alt={dish.title}
               sizes="(max-width: 767px) 60vw, (max-width: 1023px) 40vw, 30vw"
             />
             <span className="intro-dish-caption">

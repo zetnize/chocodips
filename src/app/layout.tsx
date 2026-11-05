@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import JsonLd from "@/components/ui/JsonLd";
 import { siteUrl } from "@/lib/config";
+import { publicMenu } from "@/lib/menu-store";
 import "./globals.css";
 const display = Cormorant_Garamond({
   weight: ["300", "400", "500"],
@@ -11,6 +12,7 @@ const display = Cormorant_Garamond({
   display: "swap",
   variable: "--font-display",
 });
+export const dynamic = "force-dynamic";
 const sans = Jost({
   weight: ["300", "400", "500"],
   subsets: ["cyrillic", "latin"],
@@ -60,7 +62,7 @@ export default function RootLayout({
           <a className="skip-link" href="#main-content">
             Перейти к содержимому
           </a>
-          <Header />
+          <Header menuNavigation={publicMenu().map(category => ({ href: `/menu#${category.id}`, label: category.title }))} />
           <main id="main-content" tabIndex={-1}>
             {children}
           </main>

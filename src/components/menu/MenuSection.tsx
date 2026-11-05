@@ -9,7 +9,7 @@ export default function MenuSection({
   category: MenuCategory;
   onSelect: (item: MenuItem) => void;
 }) {
-  const useCards = ["breakfast", "desserts", "main"].includes(category.id);
+  const useCards = category.layout ? category.layout === "cards" : ["breakfast", "desserts", "main"].includes(category.id);
   return (
     <section
       className="menu-section"

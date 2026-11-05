@@ -9,3 +9,4 @@ test-results/
 output/playwright/
 delivery/
 .DS_Store
+data/

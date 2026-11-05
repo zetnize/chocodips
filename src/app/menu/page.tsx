@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { menu } from "@/data/menu";
+import { publicMenu } from "@/lib/menu-store";
 import MenuHero from "@/components/menu/MenuHero";
 import MenuExplorer from "@/components/menu/MenuExplorer";
 import Disclaimer from "@/components/menu/Disclaimer";
@@ -18,7 +18,7 @@ export default function MenuPage() {
   return (
     <div className="menu-catalog">
       <MenuHero />
-      <MenuExplorer categories={menu} />
+      <MenuExplorer categories={publicMenu()} />
       <div className="container menu-bottom-note">
         <Disclaimer />
       </div>

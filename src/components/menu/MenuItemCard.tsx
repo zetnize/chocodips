@@ -16,11 +16,11 @@ export default function MenuItemCard({
       aria-haspopup="dialog"
     >
       <span className="menu-item-photo">
-        <Photo
-          src={item.image!}
+        {item.image && <Photo
+          src={item.image}
           alt=""
           sizes="(max-width: 767px) 44vw, (max-width: 1023px) 28vw, 280px"
-        />
+        />}
       </span>
       <span className="menu-item-copy">
         <span className="menu-item-name">

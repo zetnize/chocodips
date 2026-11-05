@@ -4,10 +4,10 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Logo from "./Logo";
 import MobileNav from "./MobileNav";
-import { site, menuNavigation } from "@/data/site";
+import { site } from "@/data/site";
 import { useScrolled } from "@/hooks/useScrolled";
 import { BurgerIcon } from "@/components/ui/icons";
-export default function Header() {
+export default function Header({ menuNavigation }: { menuNavigation: { href: string; label: string }[] }) {
   const path = usePathname();
   const scrolled = useScrolled();
   const [mobileOpen, setMobileOpen] = useState(false);

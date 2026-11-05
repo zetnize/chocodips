@@ -2807,3 +2807,72 @@ footer[id] {
     font-size: 15px;
   }
 }
+
+/* Local time and an interior postcard. */
+.local-moment {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 48px;
+  margin-block: 96px 48px;
+  padding-block: 28px;
+  border-bottom: 1px solid var(--line-light);
+}
+.local-moment h2 {
+  font-family: var(--font-sans), sans-serif;
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: -0.02em;
+}
+.local-moment h2 span { display: block; }
+.local-moment-time {
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(64px, 8vw, 112px);
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+.local-moment-status { justify-self: end; font-size: 16px; line-height: 1.6; }
+.local-moment-status span { display: block; font-size: 13px; color: var(--cacao-700); }
+.cafe-postcard { margin-block: 72px 64px; scroll-margin-top: calc(var(--header-h) + 24px); }
+.cafe-postcard figure { margin: 0; }
+.cafe-postcard-image {
+  position: relative;
+  height: clamp(280px, 36vw, 480px);
+  overflow: hidden;
+  border-radius: 3px;
+}
+.cafe-postcard-image .photo { position: absolute; inset: 0; }
+.cafe-postcard-image img { object-position: center 58%; }
+.cafe-postcard-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+  padding-top: 22px;
+}
+.cafe-postcard-caption p { font-size: 12px; margin-bottom: 8px; color: var(--cacao-700); }
+.cafe-postcard-caption h2 { font-size: clamp(30px, 4vw, 52px); line-height: 1.15; }
+.cafe-postcard-caption a {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  padding-block: 10px;
+  border-bottom: 1px solid var(--line-light);
+  font-size: 14px;
+}
+.cafe-postcard-caption a:hover { border-color: currentColor; }
+.cafe-postcard-caption a svg { width: 22px; height: 22px; }
+@media (max-width: 640px) {
+  .local-moment { grid-template-columns: 1fr 1fr; gap: 18px 16px; margin-block: 48px 32px; padding-block: 16px 24px; }
+  .local-moment h2 { grid-column: 1 / -1; font-size: 14px; }
+  .local-moment h2 span { display: inline; }
+  .local-moment-time { font-size: 66px; }
+  .local-moment-status { font-size: 13px; }
+  .local-moment-status span { font-size: 12px; }
+  .cafe-postcard { margin-block: 44px 40px; }
+  .cafe-postcard-image { height: 320px; }
+  .cafe-postcard-caption { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .cafe-postcard-caption h2 { font-size: 32px; }
+}

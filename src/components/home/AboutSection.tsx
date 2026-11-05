@@ -1,39 +1,28 @@
-import Eyebrow from "@/components/ui/Eyebrow";
 import Photo from "@/components/ui/Photo";
-import CircleArrowButton from "@/components/ui/CircleArrowButton";
-import Reveal from "@/components/ui/Reveal";
-import Wave from "@/components/ui/Wave";
+import { ArrowIcon } from "@/components/ui/icons";
+import { routeUrl } from "@/lib/config";
+
 export default function AboutSection() {
   return (
-    <section className="about-section" id="about" aria-labelledby="about-title">
-      <div className="about-visual">
-        <Reveal className="about-photo-reveal">
+    <section className="cafe-postcard container" id="about" aria-labelledby="postcard-title">
+      <figure>
+        <div className="cafe-postcard-image">
           <Photo
             src="/images/about-interior.jpg"
-            alt="Солнечный зал кофейни: деревянные столы, коричневые кресла и цветы у больших окон"
-            sizes="(max-width: 1023px) 100vw, 55vw"
-          />
-        </Reveal>
-        <Wave variant="soft" flip />
-      </div>
-      <Reveal className="about-copy" delay={100}>
-        <Eyebrow>О НАС</Eyebrow>
-        <h2 id="about-title">
-          Больше,
-          <br />
-          чем кофе
-        </h2>
-        <div className="about-text">
-          <p>
-            Уютное место в центре Нальчика для встреч, работы и маленьких
-            удовольствий.
-          </p>
-          <CircleArrowButton
-            label="Контакты кофейни"
-            href="/#contacts"
+            alt="Зал Choco Dips с деревянными столами и креслами у больших окон"
+            sizes="(max-width: 1439px) 90vw, 1320px"
           />
         </div>
-      </Reveal>
+        <figcaption className="cafe-postcard-caption">
+          <div>
+            <p>Choco Dips · Нальчик</p>
+            <h2 id="postcard-title">На Пушкина, 85а</h2>
+          </div>
+          <a href={routeUrl} target="_blank" rel="noopener noreferrer">
+            Как добраться <ArrowIcon />
+          </a>
+        </figcaption>
+      </figure>
     </section>
   );
 }

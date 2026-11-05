@@ -6,10 +6,8 @@ export default function HomeAtmosphere() {
       <div className="home-atmosphere-copy">
         <h2 id="atmosphere-title">Можно никуда<br />не спешить</h2>
         <p>
-          Встретиться за кофе. Обсудить всё на свете. Или просто сделать
-          паузу посреди дня — с любимым напитком и чем-нибудь сладким.
+          Загляните на кофе и десерт — с близкими или наедине с собой.
         </p>
-        <p>Заглядывайте вдвоём, с друзьями или наедине с собой.</p>
       </div>
       <figure className="home-atmosphere-coffee">
         <div className="home-atmosphere-photo">

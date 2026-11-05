@@ -2363,7 +2363,7 @@ footer[id] {
 }
 .intro-dish:first-child {
   grid-row: span 2;
-  border-radius: 46% 46% 20px 20px / 28% 28% 20px 20px;
+  border-radius: 46% 20px 20px 20px / 28% 20px 20px 20px;
 }
 .intro-dish:nth-child(2) {
   border-radius: 20px 48% 20px 20px;

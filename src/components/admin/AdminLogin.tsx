@@ -26,7 +26,6 @@ export default function AdminLogin({ configured }: { configured: boolean }) {
       <form onSubmit={submit} className="admin-login-form">
         <Link href="/" className="admin-brand">Choco Dips</Link>
         <h1>Управление меню</h1>
-        {!configured && <p>Задайте ADMIN_LOGIN и ADMIN_PASSWORD в переменных окружения хостинга и перезапустите приложение. Пароль — от 12 до 128 символов.</p>}
         <label>Логин<input name="username" minLength={3} maxLength={80} pattern="[a-zA-Z0-9_-]+" autoComplete="username" required /></label>
         <label>Пароль<input name="password" type="password" minLength={12} maxLength={128} autoComplete="current-password" required /></label>
         {error && <p className="admin-error" role="alert">{error}</p>}

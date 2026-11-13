@@ -38,10 +38,12 @@ export default function Footer() {
         </div>
         <div className="footer-bottom">
           <span>© 2026 Choco Dips</span>
+          <span>{site.operator.name}<br />ИНН {site.operator.taxNumber} · ОГРНИП {site.operator.registrationNumber}</span>
           <Link href="/privacy">Политика конфиденциальности</Link>
           {site.phone && (
-            <a href={`tel:${site.phone.replace(/\D/g, "")}`}>{site.phone}</a>
+            <a href={`tel:${site.phone.replace(/[^+\d]/g, "")}`}>{site.phone}</a>
           )}
+          <a href={`mailto:${site.email}`}>{site.email}</a>
         </div>
       </div>
     </footer>

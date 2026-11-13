@@ -38,13 +38,3 @@ export interface GalleryPhoto {
   src: string;
   alt: string;
 }
-export interface Lead {
-  name: string;
-  phone: string;
-  date: string;
-  time: string;
-  guests: string;
-  consent: boolean;
-  website: string;
-}
-export type LeadErrors = Partial<Record<keyof Lead, string>>;

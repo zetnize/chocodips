@@ -5,7 +5,14 @@ export const site = {
   address: "Нальчик, ул. Пушкина, 85а",
   hours: "10:00 – 23:00",
   kitchen: "Кухня до 22:15",
-  phone: "",
+  phone: "+7 (903) 493-94-62",
+  email: "chocodips@yandex.ru",
+  operator: {
+    taxNumber: "010520953729",
+    name: "Индивидуальный предприниматель Абдулмажид Янал",
+    registrationNumber: "319072600001502",
+    postalAddress: "360022, Кабардино-Балкарская Республика, г. Нальчик, ул. Пушкина, 85",
+  },
   socials: { instagram: "https://www.instagram.com/chocodips.ru/" },
   navigation: [
     { href: "/menu", label: "Меню" },

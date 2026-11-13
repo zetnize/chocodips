@@ -2008,10 +2008,21 @@ footer[id] {
     justify-content: space-between;
   }
   .footer-bottom {
-    flex-direction: column;
-    align-items: start;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    justify-items: start;
     gap: 6px;
     padding-block: 20px;
+  }
+  .footer-bottom > :not([href^="mailto:"], .footer-credit) {
+    grid-column: 1 / -1;
+  }
+  .footer-bottom .footer-credit {
+    grid-column: 2;
+    margin-inline-end: 12px;
+    padding-block: 3px;
+    translate: 0 -8px;
   }
   .booking-trigger {
     margin-left: 0;

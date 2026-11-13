@@ -36,6 +36,10 @@
 }
 html {
   scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
 }
 body {
   margin: 0;
@@ -923,6 +927,16 @@ footer[id] {
 }
 .footer-bottom a:hover {
   color: var(--accent-ink);
+}
+.footer-credit {
+  display: grid;
+  place-items: center;
+  min-width: 32px;
+  min-height: 32px;
+  margin-inline-start: auto;
+}
+.footer-credit img {
+  height: auto;
 }
 .booking-trigger {
   display: inline-flex;

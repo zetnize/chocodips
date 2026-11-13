@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import Logo from "./Logo";
 import SocialLinks from "./SocialLinks";
@@ -44,6 +45,9 @@ export default function Footer() {
             <a href={`tel:${site.phone.replace(/[^+\d]/g, "")}`}>{site.phone}</a>
           )}
           <a href={`mailto:${site.email}`}>{site.email}</a>
+          <a className="footer-credit" href="https://wir.lol">
+            <Image src="/brand/wir-logo.svg" alt="wir.lol" width={45} height={43} unoptimized />
+          </a>
         </div>
       </div>
     </footer>

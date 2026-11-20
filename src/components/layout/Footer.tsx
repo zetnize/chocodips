@@ -42,7 +42,7 @@ export default function Footer() {
           <span>{site.operator.name}<br />ИНН {site.operator.taxNumber} · ОГРНИП {site.operator.registrationNumber}</span>
           <Link href="/privacy">Политика конфиденциальности</Link>
           {site.phone && (
-            <a href={`tel:${site.phone.replace(/[^+\d]/g, "")}`}>{site.phone}</a>
+            <a href={`tel:${site.phone.replace(/[^+\d]/g, "").replace(/^8(\d{10})$/, "+7$1")}`}>{site.phone}</a>
           )}
           <a href={`mailto:${site.email}`}>{site.email}</a>
           <a className="footer-credit" href="https://wir.lol">

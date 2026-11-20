@@ -5,7 +5,7 @@ export const site = {
   address: "Нальчик, ул. Пушкина, 85а",
   hours: "10:00 – 23:00",
   kitchen: "Кухня до 22:15",
-  phone: "+7 (903) 493-94-62",
+  phone: "8 (964) 040-70-20",
   email: "chocodips@yandex.ru",
   operator: {
     taxNumber: "010520953729",

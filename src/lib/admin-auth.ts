@@ -76,7 +76,7 @@ export async function startSession(request: Request) {
     db.exec("DELETE FROM login_attempts");
   }
   (await cookies()).set(cookieName, token, {
-    httpOnly: true, sameSite: "strict", secure: new URL(request.url).protocol === "https:" || request.headers.get("x-forwarded-proto") === "https",
+    httpOnly: true, sameSite: "strict", secure: request.headers.get("origin")?.startsWith("https://") === true,
     path: "/", maxAge: lifetime,
   });
 }
@@ -92,6 +92,13 @@ export async function endSession() {
 }
 
 export function sameOrigin(request: Request) {
-  return request.headers.get("origin") === new URL(request.url).origin;
+  const origin = request.headers.get("origin");
+  if (!origin || origin === "null") return false;
+  if (origin === new URL(request.url).origin) return true;
+
+  // Behind a reverse proxy, Next.js may build request.url from the internal listener.
+  const publicUrl = URL.parse(process.env.NEXT_PUBLIC_SITE_URL ?? "");
+  return (publicUrl?.protocol === "https:" || publicUrl?.protocol === "http:") &&
+    origin === publicUrl.origin;
 }
 
